@@ -1,14 +1,9 @@
 [phases.build]
 cmds = [
-  "npm ci",
+  "npm install --legacy-peer-deps",
   "npx prisma generate",
   "npm run build"
 ]
 
-[phases.deploy]
-cmds = [
-  "npx prisma db push"
-]
-
 [start]
-cmd = "node dist/server.js"
+cmd = "npx prisma db push && node dist/server.js"

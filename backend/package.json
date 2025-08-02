@@ -7,8 +7,9 @@
     "dev": "tsx watch src/server.ts",
     "build": "prisma generate && tsc",
     "start": "prisma db push && node dist/server.js",
-    "railway:build": "prisma generate && tsc", 
+    "railway:build": "npm install && prisma generate && tsc", 
     "railway:start": "prisma db push && node dist/server.js",
+    "postinstall": "prisma generate",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
@@ -39,5 +40,9 @@
     "prisma": "^5.7.1",
     "tsx": "^4.6.2",
     "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   }
 }
