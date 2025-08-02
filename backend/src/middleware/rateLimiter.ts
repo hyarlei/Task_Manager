@@ -2,18 +2,14 @@ import rateLimit from 'express-rate-limit';
 
 export const rateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  max: 200, // Aumentar limite temporariamente
   message: {
     error: 'Too many requests from this IP, please try again later.'
   },
   standardHeaders: true,
   legacyHeaders: false,
-  // Skip rate limiting for health checks
+  // Skip rate limiting para health e desenvolvimento
   skip: (req) => {
-    return req.path === '/health';
-  },
-  // Key generator que funciona bem com proxies
-  keyGenerator: (req) => {
-    return req.ip || req.connection.remoteAddress || 'unknown';
+    return req.path === '/health' || process.env.NODE_ENV !== 'production';
   }
 });
