@@ -7,7 +7,7 @@ cmds = [
 
 [phases.deploy]
 cmds = [
-  "npx prisma migrate deploy"
+  "npx prisma db push"
 ]
 
 [start]
