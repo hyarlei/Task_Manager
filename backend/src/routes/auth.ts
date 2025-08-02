@@ -21,7 +21,7 @@ const loginSchema = z.object({
 });
 
 // Register
-router.post('/register', async (req, res) => {
+router.post('/register', async (req, res): Promise<any> => {
   try {
     const { name, email, password } = registerSchema.parse(req.body);
 
@@ -78,7 +78,7 @@ router.post('/register', async (req, res) => {
 });
 
 // Login
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res): Promise<any> => {
   try {
     const { email, password } = loginSchema.parse(req.body);
 
@@ -129,8 +129,12 @@ router.post('/login', async (req, res) => {
 });
 
 // Get current user
-router.get('/me', authenticateToken, async (req: AuthRequest, res) => {
+router.get('/me', authenticateToken, async (req: AuthRequest, res: any) => {
   try {
+    if (!req.userId) {
+      return res.status(401).json({ error: 'User ID not found' });
+    }
+
     const user = await prisma.user.findUnique({
       where: { id: req.userId },
       select: {
@@ -160,7 +164,7 @@ router.get('/me', authenticateToken, async (req: AuthRequest, res) => {
 });
 
 // Refresh token
-router.post('/refresh', authenticateToken, async (req: AuthRequest, res) => {
+router.post('/refresh', authenticateToken, async (req: AuthRequest, res): Promise<any> => {
   try {
     const token = jwt.sign(
       { userId: req.userId },

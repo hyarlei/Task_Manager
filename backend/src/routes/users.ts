@@ -19,8 +19,12 @@ const changePasswordSchema = z.object({
 });
 
 // Get user profile
-router.get('/profile', authenticateToken, async (req: AuthRequest, res) => {
+router.get('/profile', authenticateToken, async (req: AuthRequest, res): Promise<any> => {
   try {
+    if (!req.userId) {
+      return res.status(401).json({ error: 'User ID not found' });
+    }
+
     const user = await prisma.user.findUnique({
       where: { id: req.userId },
       select: {
@@ -50,13 +54,22 @@ router.get('/profile', authenticateToken, async (req: AuthRequest, res) => {
 });
 
 // Update user profile
-router.put('/profile', authenticateToken, async (req: AuthRequest, res) => {
+router.put('/profile', authenticateToken, async (req: AuthRequest, res): Promise<any> => {
   try {
+    if (!req.userId) {
+      return res.status(401).json({ error: 'User ID not found' });
+    }
+
     const data = updateProfileSchema.parse(req.body);
+
+    // Filter out undefined values
+    const updateData: any = {};
+    if (data.name !== undefined) updateData.name = data.name;
+    if (data.avatar !== undefined) updateData.avatar = data.avatar;
 
     const user = await prisma.user.update({
       where: { id: req.userId },
-      data,
+      data: updateData,
       select: {
         id: true,
         name: true,
@@ -83,8 +96,12 @@ router.put('/profile', authenticateToken, async (req: AuthRequest, res) => {
 });
 
 // Change password
-router.put('/password', authenticateToken, async (req: AuthRequest, res) => {
+router.put('/password', authenticateToken, async (req: AuthRequest, res): Promise<any> => {
   try {
+    if (!req.userId) {
+      return res.status(401).json({ error: 'User ID not found' });
+    }
+
     const { currentPassword, newPassword } = changePasswordSchema.parse(req.body);
 
     // Get current user with password
@@ -126,8 +143,12 @@ router.put('/password', authenticateToken, async (req: AuthRequest, res) => {
 });
 
 // Delete user account
-router.delete('/account', authenticateToken, async (req: AuthRequest, res) => {
+router.delete('/account', authenticateToken, async (req: AuthRequest, res): Promise<any> => {
   try {
+    if (!req.userId) {
+      return res.status(401).json({ error: 'User ID not found' });
+    }
+
     // Delete user (cascade will handle tasks and categories)
     await prisma.user.delete({
       where: { id: req.userId }

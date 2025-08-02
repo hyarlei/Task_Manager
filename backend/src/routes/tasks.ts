@@ -32,8 +32,12 @@ const taskQuerySchema = z.object({
 });
 
 // Get all tasks for user
-router.get('/', authenticateToken, async (req: AuthRequest, res) => {
+router.get('/', authenticateToken, async (req: AuthRequest, res): Promise<any> => {
   try {
+    if (!req.userId) {
+      return res.status(401).json({ error: 'User ID not found' });
+    }
+
     const query = taskQuerySchema.parse(req.query);
     const page = query.page || 1;
     const limit = Math.min(query.limit || 10, 50);
@@ -94,9 +98,13 @@ router.get('/', authenticateToken, async (req: AuthRequest, res) => {
 });
 
 // Get task by ID
-router.get('/:id', authenticateToken, async (req: AuthRequest, res) => {
+router.get('/:id', authenticateToken, async (req: AuthRequest, res): Promise<any> => {
   try {
     const { id } = req.params;
+
+    if (!req.userId || !id) {
+      return res.status(401).json({ error: 'User ID or Task ID not found' });
+    }
 
     const task = await prisma.task.findFirst({
       where: {
@@ -122,8 +130,12 @@ router.get('/:id', authenticateToken, async (req: AuthRequest, res) => {
 });
 
 // Create new task
-router.post('/', authenticateToken, async (req: AuthRequest, res) => {
+router.post('/', authenticateToken, async (req: AuthRequest, res): Promise<any> => {
   try {
+    if (!req.userId) {
+      return res.status(401).json({ error: 'User ID not found' });
+    }
+
     const data = createTaskSchema.parse(req.body);
 
     // Validate category belongs to user if provided
@@ -143,7 +155,9 @@ router.post('/', authenticateToken, async (req: AuthRequest, res) => {
     const task = await prisma.task.create({
       data: {
         ...data,
-        userId: req.userId!,
+        description: data.description || null,
+        categoryId: data.categoryId || null,
+        userId: req.userId,
         dueDate: data.dueDate ? new Date(data.dueDate) : null
       },
       include: {
@@ -170,10 +184,14 @@ router.post('/', authenticateToken, async (req: AuthRequest, res) => {
 });
 
 // Update task
-router.put('/:id', authenticateToken, async (req: AuthRequest, res) => {
+router.put('/:id', authenticateToken, async (req: AuthRequest, res): Promise<any> => {
   try {
     const { id } = req.params;
     const data = updateTaskSchema.parse(req.body);
+
+    if (!req.userId || !id) {
+      return res.status(401).json({ error: 'User ID or Task ID not found' });
+    }
 
     // Check if task exists and belongs to user
     const existingTask = await prisma.task.findFirst({
@@ -204,6 +222,8 @@ router.put('/:id', authenticateToken, async (req: AuthRequest, res) => {
     // Set completedAt if status changes to COMPLETED
     const updateData: any = {
       ...data,
+      description: data.description !== undefined ? (data.description || null) : undefined,
+      categoryId: data.categoryId !== undefined ? (data.categoryId || null) : undefined,
       dueDate: data.dueDate ? new Date(data.dueDate) : undefined
     };
 
@@ -213,9 +233,17 @@ router.put('/:id', authenticateToken, async (req: AuthRequest, res) => {
       updateData.completedAt = null;
     }
 
+    // Filter out undefined values
+    const filteredUpdateData: any = {};
+    Object.keys(updateData).forEach(key => {
+      if (updateData[key] !== undefined) {
+        filteredUpdateData[key] = updateData[key];
+      }
+    });
+
     const task = await prisma.task.update({
       where: { id },
-      data: updateData,
+      data: filteredUpdateData,
       include: {
         category: {
           select: { id: true, name: true, color: true }
@@ -240,9 +268,13 @@ router.put('/:id', authenticateToken, async (req: AuthRequest, res) => {
 });
 
 // Delete task
-router.delete('/:id', authenticateToken, async (req: AuthRequest, res) => {
+router.delete('/:id', authenticateToken, async (req: AuthRequest, res): Promise<any> => {
   try {
     const { id } = req.params;
+
+    if (!req.userId || !id) {
+      return res.status(401).json({ error: 'User ID or Task ID not found' });
+    }
 
     const task = await prisma.task.findFirst({
       where: {
@@ -267,8 +299,12 @@ router.delete('/:id', authenticateToken, async (req: AuthRequest, res) => {
 });
 
 // Get task statistics
-router.get('/stats/overview', authenticateToken, async (req: AuthRequest, res) => {
+router.get('/stats/overview', authenticateToken, async (req: AuthRequest, res): Promise<any> => {
   try {
+    if (!req.userId) {
+      return res.status(401).json({ error: 'User ID not found' });
+    }
+
     const stats = await prisma.task.groupBy({
       by: ['status'],
       where: { userId: req.userId },

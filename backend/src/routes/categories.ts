@@ -16,8 +16,12 @@ const createCategorySchema = z.object({
 const updateCategorySchema = createCategorySchema.partial();
 
 // Get all categories for user
-router.get('/', authenticateToken, async (req: AuthRequest, res) => {
+router.get('/', authenticateToken, async (req: AuthRequest, res): Promise<any> => {
   try {
+    if (!req.userId) {
+      return res.status(401).json({ error: 'User ID not found' });
+    }
+
     const categories = await prisma.category.findMany({
       where: { userId: req.userId },
       include: {
@@ -36,9 +40,13 @@ router.get('/', authenticateToken, async (req: AuthRequest, res) => {
 });
 
 // Get category by ID
-router.get('/:id', authenticateToken, async (req: AuthRequest, res) => {
+router.get('/:id', authenticateToken, async (req: AuthRequest, res): Promise<any> => {
   try {
     const { id } = req.params;
+
+    if (!req.userId || !id) {
+      return res.status(401).json({ error: 'User ID or Category ID not found' });
+    }
 
     const category = await prisma.category.findFirst({
       where: {
@@ -64,8 +72,12 @@ router.get('/:id', authenticateToken, async (req: AuthRequest, res) => {
 });
 
 // Create new category
-router.post('/', authenticateToken, async (req: AuthRequest, res) => {
+router.post('/', authenticateToken, async (req: AuthRequest, res): Promise<any> => {
   try {
+    if (!req.userId) {
+      return res.status(401).json({ error: 'User ID not found' });
+    }
+
     const data = createCategorySchema.parse(req.body);
 
     // Check if category name already exists for user
@@ -83,7 +95,8 @@ router.post('/', authenticateToken, async (req: AuthRequest, res) => {
     const category = await prisma.category.create({
       data: {
         ...data,
-        userId: req.userId!
+        description: data.description || null,
+        userId: req.userId
       },
       include: {
         _count: {
@@ -109,10 +122,14 @@ router.post('/', authenticateToken, async (req: AuthRequest, res) => {
 });
 
 // Update category
-router.put('/:id', authenticateToken, async (req: AuthRequest, res) => {
+router.put('/:id', authenticateToken, async (req: AuthRequest, res): Promise<any> => {
   try {
     const { id } = req.params;
     const data = updateCategorySchema.parse(req.body);
+
+    if (!req.userId || !id) {
+      return res.status(401).json({ error: 'User ID or Category ID not found' });
+    }
 
     // Check if category exists and belongs to user
     const existingCategory = await prisma.category.findFirst({
@@ -141,9 +158,15 @@ router.put('/:id', authenticateToken, async (req: AuthRequest, res) => {
       }
     }
 
+    // Filter out undefined values
+    const updateData: any = {};
+    if (data.name !== undefined) updateData.name = data.name;
+    if (data.description !== undefined) updateData.description = data.description || null;
+    if (data.color !== undefined) updateData.color = data.color;
+
     const category = await prisma.category.update({
       where: { id },
-      data,
+      data: updateData,
       include: {
         _count: {
           select: { tasks: true }
@@ -168,9 +191,13 @@ router.put('/:id', authenticateToken, async (req: AuthRequest, res) => {
 });
 
 // Delete category
-router.delete('/:id', authenticateToken, async (req: AuthRequest, res) => {
+router.delete('/:id', authenticateToken, async (req: AuthRequest, res): Promise<any> => {
   try {
     const { id } = req.params;
+
+    if (!req.userId || !id) {
+      return res.status(401).json({ error: 'User ID or Category ID not found' });
+    }
 
     const category = await prisma.category.findFirst({
       where: {
