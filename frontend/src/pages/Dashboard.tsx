@@ -1,16 +1,19 @@
 import {
-    CheckCircleIcon,
-    ClockIcon,
-    ExclamationTriangleIcon,
-    PlusIcon,
+  CheckCircleIcon,
+  ClockIcon,
+  ExclamationTriangleIcon,
+  PlusIcon,
 } from '@heroicons/react/24/outline';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useQuery } from 'react-query';
+import { useNavigate } from 'react-router-dom';
 import { tasksAPI } from '../services/api';
 import { Priority, TaskStatus } from '../types';
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+  
   const { data: stats, isLoading: statsLoading } = useQuery(
     'task-stats',
     () => tasksAPI.getStats(),
@@ -94,7 +97,10 @@ export default function Dashboard() {
             Bem-vindo de volta! Aqui está um resumo das suas tarefas.
           </p>
         </div>
-        <button className="btn-primary">
+        <button 
+          onClick={() => navigate('/tasks?action=create')}
+          className="btn-primary"
+        >
           <PlusIcon className="w-4 h-4 mr-2" />
           Nova Tarefa
         </button>
