@@ -224,8 +224,8 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 **Hyarlei Freitas**
 
-- GitHub: [@hyarlei-freitas](https://github.com/hyarlei-freitas)
-- LinkedIn: [Hyarlei Freitas](https://linkedin.com/in/hyarlei-freitas)
+- GitHub: [@hyarlei-freitas](https://github.com/hyarlei)
+- LinkedIn: [Hyarlei Freitas](https://www.linkedin.com/in/hyarlei-silva)
 
 ---
 
