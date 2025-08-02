@@ -1,5 +1,3 @@
-<!-- Use this file to provide workspace-specific custom instructions to Copilot. For more details, visit https://code.visualstudio.com/docs/copilot/copilot-customization#_use-a-githubcopilotinstructionsmd-file -->
-
 # Task Manager - Sistema de Gerenciamento de Tarefas
 
 Este é um projeto fullstack de gerenciamento de tarefas construído com as seguintes tecnologias:
@@ -8,7 +6,7 @@ Este é um projeto fullstack de gerenciamento de tarefas construído com as segu
 - **Node.js** com **TypeScript**
 - **Express.js** para APIs REST
 - **Prisma** como ORM
-- **PostgreSQL** como banco de dados
+- **SQLite** como banco de dados
 - **JWT** para autenticação
 - **Zod** para validação
 - **bcryptjs** para hash de senhas
