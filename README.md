@@ -4,12 +4,12 @@
 
 ![Task Manager Logo](https://img.shields.io/badge/Task-Manager-blue?style=for-the-badge&logo=checkmarx&logoColor=white)
 
-**Sistema completo de gerenciamento de tarefas construído com React, TypeScript, Node.js e PostgreSQL**
+**Sistema completo de gerenciamento de tarefas construído com React, TypeScript, Node.js e SQLite**
 
 [![React](https://img.shields.io/badge/React-18.2.0-61DAFB?style=flat&logo=react&logoColor=white)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.2.2-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-20+-339933?style=flat&logo=node.js&logoColor=white)](https://nodejs.org/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-4169E1?style=flat&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![SQLite](https://img.shields.io/badge/SQLite-15+-4169E1?style=flat&logo=postgresql&logoColor=white)](https://www.sqlite.org/)
 
 </div>
 
@@ -31,7 +31,7 @@
 - **Node.js** + **TypeScript** - Runtime e linguagem
 - **Express.js** - Framework web
 - **Prisma** - ORM moderno
-- **PostgreSQL** - Banco de dados
+- **SQLite** - Banco de dados
 - **JWT** - Autenticação
 - **Zod** - Validação de schemas
 - **bcryptjs** - Hash de senhas
@@ -50,7 +50,7 @@
 
 ### Pré-requisitos
 - Node.js 18+ 
-- PostgreSQL 13+
+- SQLite 13+
 - npm ou yarn
 
 ### 1. Clone o repositório
@@ -103,7 +103,6 @@ npm run dev
 ```env
 NODE_ENV=development
 PORT=3001
-DATABASE_URL="postgresql://username:password@localhost:5432/taskmanager"
 JWT_SECRET=your-super-secret-jwt-key
 FRONTEND_URL=http://localhost:3000
 ```
