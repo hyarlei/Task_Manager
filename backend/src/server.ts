@@ -64,37 +64,6 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Endpoint para popular banco com usuário demo (apenas para teste)
-app.post('/setup-demo', async (req, res): Promise<void> => {
-  try {
-    const bcrypt = require('bcryptjs');
-    
-    const existingUser = await prisma.user.findUnique({
-      where: { email: 'demo@taskmanager.com' }
-    });
-
-    if (existingUser) {
-      res.json({ message: 'Demo user already exists' });
-      return;
-    }
-
-    const hashedPassword = await bcrypt.hash('demo123', 12);
-    
-    const user = await prisma.user.create({
-      data: {
-        name: 'Demo User',
-        email: 'demo@taskmanager.com',
-        password: hashedPassword
-      }
-    });
-
-    res.json({ message: 'Demo user created successfully', userId: user.id });
-  } catch (error) {
-    console.error('Setup demo error:', error);
-    res.status(500).json({ error: 'Failed to create demo user' });
-  }
-});
-
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', tasksRoutes);
