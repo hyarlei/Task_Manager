@@ -198,15 +198,60 @@ npm run lint       # Executar ESLint
 
 ## 🏗️ Deploy
 
-### Backend (Railway/Heroku)
+### Backend (Render)
+
+#### 1. Via Render Dashboard:
+1. Conecte seu repositório GitHub ao Render
+2. Crie um novo **Web Service**
+3. Configure os seguintes parâmetros:
+   - **Root Directory**: `backend`
+   - **Build Command**: `npm install && npx prisma generate && npm run build`
+   - **Start Command**: `npm start`
+   - **Node Version**: `18` ou superior
+
+#### 2. Variáveis de Ambiente no Render:
+```env
+NODE_ENV=production
+DATABASE_URL=file:./prod.db
+JWT_SECRET=your-super-secret-jwt-key-for-production
+FRONTEND_URL=https://your-frontend-url.onrender.com
+```
+
+#### 3. Via arquivo render.yaml (recomendado):
+```yaml
+services:
+  - type: web
+    name: task-manager-backend
+    runtime: node
+    env: node
+    plan: free
+    buildCommand: cd backend && npm install && npx prisma generate && npm run build
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        value: file:./prod.db
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        value: https://your-frontend-url.onrender.com
+```
+
+### Backend (Railway) - Alternativa
 1. Configure as variáveis de ambiente
 2. Execute `npm run build`
 3. Configure o comando start: `npm start`
 
-### Frontend (Vercel/Netlify)
-1. Configure a variável `VITE_API_URL`
+### Frontend (Vercel/Netlify/Render)
+1. Configure a variável `VITE_API_URL` com a URL do seu backend
 2. Execute `npm run build`
 3. Deploy da pasta `dist/`
+
+#### Para Render Frontend:
+- **Build Command**: `npm install && npm run build`
+- **Publish Directory**: `dist`
+- **Start Command**: `npm run preview` (opcional)
 
 ## 🤝 Contribuição
 
