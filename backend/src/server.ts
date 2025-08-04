@@ -35,6 +35,23 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(rateLimiter);
 
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'Task Manager API',
+    version: '1.0.0',
+    status: 'running',
+    endpoints: {
+      health: '/health',
+      api: '/api',
+      auth: '/api/auth',
+      tasks: '/api/tasks',
+      categories: '/api/categories',
+      users: '/api/users'
+    }
+  });
+});
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Task Manager API is running!' });
