@@ -8,11 +8,17 @@ import helmet from 'helmet';
 import { errorHandler } from './middleware/errorHandler';
 import { rateLimiter } from './middleware/rateLimiter';
 
+// Routes
+import authRoutes from './routes/auth';
+import categoriesRoutes from './routes/categories';
+import tasksRoutes from './routes/tasks';
+import usersRoutes from './routes/users';
+
 dotenv.config();
 
 const app = express();
 const prisma = new PrismaClient();
-const PORT = process.env.FRONTEND_URL;
+const PORT = process.env.PORT || 3001;
 
 // Trust proxy - Necessário para Railway/Heroku/etc
 if (process.env.NODE_ENV === 'production') {
@@ -28,6 +34,36 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(rateLimiter);
+
+// Routes
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Task Manager API',
+    version: '1.0.0',
+    status: 'running',
+    endpoints: {
+      health: '/health',
+      auth: '/api/auth',
+      tasks: '/api/tasks',
+      categories: '/api/categories',
+      users: '/api/users'
+    }
+  });
+});
+
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
+// API Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/tasks', tasksRoutes);
+app.use('/api/categories', categoriesRoutes);
+app.use('/api/users', usersRoutes);
 
 // Error handling
 app.use(errorHandler);
