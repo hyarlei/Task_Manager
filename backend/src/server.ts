@@ -60,7 +60,7 @@ app.get('/health', (req, res) => {
 });
 
 // Endpoint para popular banco com usuário demo (apenas para teste)
-app.post('/setup-demo', async (req, res) => {
+app.post('/setup-demo', async (req, res): Promise<void> => {
   try {
     const bcrypt = require('bcryptjs');
     
@@ -69,7 +69,8 @@ app.post('/setup-demo', async (req, res) => {
     });
 
     if (existingUser) {
-      return res.json({ message: 'Demo user already exists' });
+      res.json({ message: 'Demo user already exists' });
+      return;
     }
 
     const hashedPassword = await bcrypt.hash('demo123', 12);
