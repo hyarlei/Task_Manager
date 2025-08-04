@@ -9,7 +9,6 @@
 [![React](https://img.shields.io/badge/React-18.2.0-61DAFB?style=flat&logo=react&logoColor=white)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.2.2-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-20+-339933?style=flat&logo=node.js&logoColor=white)](https://nodejs.org/)
-[![SQLite](https://img.shields.io/badge/SQLite-15+-4169E1?style=flat&logo=postgresql&logoColor=white)](https://www.sqlite.org/)
 
 </div>
 
@@ -50,7 +49,6 @@
 
 ### Pré-requisitos
 - Node.js 18+ 
-- SQLite 13+
 - npm ou yarn
 
 ### 1. Clone o repositório
